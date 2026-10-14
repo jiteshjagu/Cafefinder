@@ -1,0 +1,123 @@
+{
+  "project_name": "BrewSpot - Cafe Review & Recommendation System",
+  "design_vibe": "Warm, Cozy Coffee-House with Swiss Editorial Aesthetics",
+  "archetype": "ORGANIC & EARTHY mixed with EDITORIAL PRECISION",
+  "color_palette": {
+    "background_light": "#FAF6F0",
+    "background_dark": "#181310",
+    "surface_light": "#FFFFFF",
+    "surface_dark": "#231C18",
+    "primary": "#C86D3B",
+    "primary_hover": "#A85528",
+    "primary_foreground": "#FFFFFF",
+    "secondary": "#2C221E",
+    "secondary_foreground": "#FAF6F0",
+    "accent_warm": "#E09F3E",
+    "accent_sage": "#6B8E23",
+    "muted_cream": "#F3EBE1",
+    "muted_border_light": "#E4DACF",
+    "muted_border_dark": "#362A23",
+    "text_main_light": "#2C221E",
+    "text_subtle_light": "#6E5E55",
+    "text_main_dark": "#F5EFE8",
+    "text_subtle_dark": "#A89A8E"
+  },
+  "typography": {
+    "heading_font": "Playfair Display, Merriweather, serif",
+    "body_font": "Plus Jakarta Sans, DM Sans, sans-serif",
+    "mono_font": "JetBrains Mono, monospace",
+    "font_loading_link": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap",
+    "rules": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#2C221E] font-serif",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-[#2C221E] font-serif",
+      "h3": "text-xl sm:text-2xl font-semibold text-[#2C221E]",
+      "h4_card": "text-lg sm:text-xl font-bold text-[#2C221E]",
+      "body": "text-base leading-relaxed text-[#6E5E55]",
+      "caption_label": "text-xs uppercase tracking-[0.18em] font-mono text-[#C86D3B] font-semibold"
+    }
+  },
+  "navigation": {
+    "header_style": "sticky top-0 z-50 backdrop-blur-md bg-[#FAF6F0]/90 border-b border-[#E4DACF] transition-all duration-200",
+    "nav_items": ["Explore Cafes", "AI Barista Finder", "Curated Maps", "Top Rated", "Saved Cafes"],
+    "mobile_menu": "Sheet component with warm paper background, rich typography and quick login/register links"
+  },
+  "layout_patterns": {
+    "landing_hero": "Asymmetrical two-column grid (md:grid-cols-12 gap-8) with bold headline, quick feature tags ('Quiet for work', 'Artisanal Roaster', 'Pet-Friendly', 'Matcha & Pastries'), quick search input bar with price filter chips, and floating interactive photo hero frame",
+    "explore_grid": "Sidebar layout (Filter drawer on mobile, 3-col filter sidebar on desktop) with Tetris bento grid for cafes featuring hero spotlight card, standard cafe cards, and high-density stats widget",
+    "detail_page": "Multi-section layout featuring 4-photo asymmetrical mosaic hero gallery, key stats strip (Rating, Price level, Wifi speed, Vibe score, Noise level), interactive tabs for Menu, Reviews + AI Summary, Photos, and Location Info, plus floating sticky review writer button",
+    "ai_barista_chat": "Floating bottom-right drawer / side panel with coffee cup trigger button, quick prompt suggestions ('Find cozy cafes with outlet access near me', 'Best cold brew and vegan muffins', 'Romantic evening cafe with wine and desserts'), and structured recommendation response cards"
+  },
+  "component_guidelines": {
+    "cafe_card": {
+      "container": "bg-white border border-[#E4DACF] rounded-2xl overflow-hidden hover:border-[#C86D3B]/50 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group relative",
+      "image_wrapper": "relative h-52 w-full overflow-hidden bg-[#F3EBE1]",
+      "price_badge": "absolute top-3 right-3 bg-[#2C221E]/80 backdrop-blur-sm text-[#FAF6F0] px-3 py-1 rounded-full text-xs font-mono font-semibold",
+      "rating_pill": "absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm text-[#2C221E] px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm",
+      "amenities_chips": "flex flex-wrap gap-1.5 mt-3"
+    },
+    "menu_section": {
+      "categories": ["Signature Espresso", "Cold Brew & Craft", "Artisanal Teas & Matcha", "Bakery & Toast", "Brunch & Warm Bites"],
+      "item_row": "flex items-start justify-between p-4 bg-[#FAF6F0]/60 hover:bg-[#FAF6F0] rounded-xl border border-[#E4DACF]/60 transition-colors duration-200",
+      "price_tag": "font-mono font-bold text-[#C86D3B] text-base"
+    },
+    "ai_summary_box": {
+      "container": "bg-gradient-to-br from-[#F3EBE1] to-[#FAF6F0] border border-[#C86D3B]/30 rounded-2xl p-6 shadow-sm",
+      "badge": "inline-flex items-center gap-2 bg-[#C86D3B]/10 text-[#C86D3B] text-xs font-mono font-bold px-3 py-1 rounded-full mb-3"
+    }
+  },
+  "image_urls": {
+    "hero_interiors": [
+      "https://images.unsplash.com/photo-1691067987594-b1b7f84ba55a?q=85",
+      "https://images.unsplash.com/photo-1627743914480-5c0a391767f0?q=85",
+      "https://images.unsplash.com/photo-1567880905822-56f8e06fe630?q=85",
+      "https://images.unsplash.com/photo-1613274554329-70f997f5789f?q=85"
+    ],
+    "espresso_and_drinks": [
+      "https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?q=85",
+      "https://images.unsplash.com/photo-1613187869034-fa8e42b2ab1c?q=85",
+      "https://images.unsplash.com/photo-1721277000438-488066df7ac8?q=85",
+      "https://images.unsplash.com/photo-1565252556328-92ee4a9a0983?q=85"
+    ],
+    "barista_craft": [
+      "https://images.unsplash.com/photo-1788404805053-6333ed913a5e?q=85",
+      "https://images.unsplash.com/photo-1773966071301-168b46e3410a?q=85",
+      "https://images.unsplash.com/photo-1760085160740-3f0c652116e8?q=85"
+    ]
+  },
+  "testing_and_data_ids": {
+    "rule": "Every interactive button, link, search input, filter tab, star rating, modal trigger, and chat action MUST have data-testid attribute in kebab-case.",
+    "sample_testids": [
+      "nav-explore-link",
+      "nav-ai-barista-button",
+      "nav-favorites-link",
+      "nav-login-button",
+      "hero-search-input",
+      "hero-search-button",
+      "filter-price-select",
+      "filter-cuisine-select",
+      "filter-min-rating",
+      "cafe-card-link-{cafeId}",
+      "cafe-favorite-toggle-{cafeId}",
+      "cafe-detail-write-review-btn",
+      "review-submit-button",
+      "ai-barista-chat-trigger",
+      "ai-barista-send-btn",
+      "admin-add-cafe-btn"
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Ensure the app uses React + Tailwind CSS with the warm coffee house color palette specified in design_guidelines.json.",
+    "Import Google Fonts for Playfair Display, Plus Jakarta Sans, and JetBrains Mono in index.html / index.css.",
+    "Support full feature set: Home search, Explore with comprehensive filters & sorting, Cafe Details (Menu, Reviews, AI Summary, Photo gallery, Rating breakdown), AI Barista Chat drawer, Saved/Favorite Cafes with local/backend persistence, JWT Login/Register, and Admin Panel for managing cafes & menus.",
+    "Implement realistic seeded mock data in FastAPI backend (MongoDB) if DB is empty so the user immediately sees 8+ rich cafes with menus, photos, wifi status, noise level, and reviews.",
+    "Use sonner for toast notifications when saving cafes, submitting reviews, or logging in.",
+    "Ensure all components are modular JavaScript (.js / .jsx) files in /app/frontend/src.",
+    "Add explicit data-testid attributes to all buttons, links, search inputs, and form controls."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": {
+    "anti_ai_slop": "Do not build generic white/dark blue dashboards. Use warm paper tones (#FAF6F0), rich roasted amber buttons (#C86D3B), and elegant serif headlines (Playfair Display).",
+    "spacing": "Use generous padding (p-6, p-8, p-12) and clear spatial hierarchy. Never crowd elements.",
+    "transitions": "Add smooth explicit transitions (e.g., transition-colors duration-200, hover:-translate-y-1). Avoid transition-all on wrapper grids.",
+    "placeholders": "NEVER use placeholder.com URLs. ALWAYS use the curated Unsplash image URLs provided in design_guidelines.json."
+  }
+}
