@@ -2,13 +2,14 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { StarInput } from "@/components/Stars";
+import PhotoPicker from "@/components/PhotoPicker";
 import { api, formatError } from "@/lib/api";
 
 const SUBS = [["coffee", "Coffee & food"], ["ambience", "Ambience"], ["service", "Service"], ["value", "Value for money"]];
 const VISITS = ["Solo", "Date", "Friends", "Work", "Family"];
 
 export default function ReviewForm({ open, onOpenChange, cafeId, initial, onSaved }) {
-  const [f, setF] = useState(initial || { rating: 0, coffee: 4, ambience: 4, service: 4, value: 4, visit_type: "Solo", text: "" });
+  const [f, setF] = useState(initial || { rating: 0, coffee: 4, ambience: 4, service: 4, value: 4, visit_type: "Solo", text: "", photos: [] });
   const [busy, setBusy] = useState(false);
   const upd = (k, v) => setF((s) => ({ ...s, [k]: v }));
 
@@ -50,6 +51,7 @@ export default function ReviewForm({ open, onOpenChange, cafeId, initial, onSave
           </div>
           <textarea value={f.text} onChange={(e) => upd("text", e.target.value)} rows={5} placeholder="What did you order? How was the vibe? (min 10 characters)" data-testid="review-text-input"
             className="w-full rounded-xl border border-[#E4DACF] bg-white p-4 text-sm outline-none focus:border-[#C86D3B]" />
+          <PhotoPicker photos={f.photos || []} onChange={(v) => upd("photos", v)} />
           <button disabled={busy} data-testid="review-submit-button" className="w-full rounded-full bg-[#C86D3B] py-3 font-semibold text-white transition-colors hover:bg-[#A85528] disabled:opacity-60">
             {busy ? "Posting..." : initial ? "Update review" : "Post review"}
           </button>

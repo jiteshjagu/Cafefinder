@@ -5,6 +5,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, A
 import { formatDistanceToNow } from "date-fns";
 import { api } from "@/lib/api";
 import { Stars } from "@/components/Stars";
+import PhotoStrip from "@/components/PhotoStrip";
 
 const STAR_COLORS = ["#C86D3B", "#D9824F", "#E09F3E", "#B5A04A", "#6B8E23"];
 
@@ -114,6 +115,7 @@ export default function ReviewsDashboard() {
                   <Stars value={r.rating} size={13} />
                 </div>
                 <p className="mt-2 text-sm leading-relaxed">{r.text}</p>
+                <PhotoStrip photos={r.photos} size="h-16 w-16" testid={`feed-photos-${r.id}`} />
               </Link>
             ))}
             {feed.length === 0 && <p className="py-10 text-center text-sm text-[#6E5E55]" data-testid="reviews-feed-empty">No reviews match.</p>}

@@ -14,7 +14,8 @@ from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 
 from bson import ObjectId
-from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
+import asyncio
+from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, UploadFile, File
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field, EmailStr
@@ -23,6 +24,7 @@ from emergentintegrations.llm.chat import LlmChat, UserMessage
 from auth_utils import (hash_password, verify_password, create_access_token, create_refresh_token,
                         decode, public_user, user_from_request)
 from seed_data import CAFES, REVIEWERS, REVIEW_TEXTS
+from storage import init_storage, put_object, get_object, APP_NAME
 
 client = AsyncIOMotorClient(os.environ['MONGO_URL'])
 db = client[os.environ['DB_NAME']]
@@ -89,6 +91,7 @@ class ReviewIn(BaseModel):
     value: int = Field(ge=1, le=5)
     visit_type: str = "Solo"
     text: str = Field(min_length=10, max_length=2000)
+    photos: List[str] = Field(default=[], max_length=4)
 
 
 class ChatIn(BaseModel):
@@ -259,6 +262,10 @@ async def add_review(cafe_id: str, body: ReviewIn, request: Request):
         raise HTTPException(status_code=404, detail="Cafe not found")
     existing = await db.reviews.find_one({"cafe_id": cafe_id, "user_id": user["id"]})
     data = body.model_dump()
+    if data["photos"]:
+        owned = await db.files.count_documents({"id": {"$in": data["photos"]}, "user_id": user["id"], "is_deleted": False})
+        if owned != len(set(data["photos"])):
+            raise HTTPException(status_code=400, detail="Invalid photo reference")
     if existing:
         await db.reviews.update_one({"id": existing["id"]}, {"$set": {**data, "updated_at": now_iso()}})
         rid = existing["id"]
@@ -330,6 +337,40 @@ async def ai_summary(cafe_id: str):
     data["review_count"] = cafe["review_count"]
     await db.cafes.update_one({"id": cafe_id}, {"$set": {"ai_summary": data}})
     return data
+
+
+# ---------- Uploads ----------
+ALLOWED_IMG = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif", "image/heic": "heic"}
+
+
+@api.post("/uploads")
+async def upload_photo(request: Request, file: UploadFile = File(...)):
+    user = await user_from_request(request, db)
+    if file.content_type not in ALLOWED_IMG:
+        raise HTTPException(status_code=400, detail="Only JPG, PNG, WEBP, GIF or HEIC images allowed")
+    data = await file.read()
+    if len(data) > 8 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Image must be under 8MB")
+    fid = str(uuid.uuid4())
+    path = f"{APP_NAME}/reviews/{user['id']}/{fid}.{ALLOWED_IMG[file.content_type]}"
+    try:
+        result = await asyncio.to_thread(put_object, path, data, file.content_type)
+    except Exception as e:
+        logger.error(f"upload failed: {e}")
+        raise HTTPException(status_code=502, detail="Photo upload failed, please try again")
+    await db.files.insert_one({"id": fid, "storage_path": result["path"], "user_id": user["id"], "original_filename": file.filename,
+                               "content_type": file.content_type, "size": result.get("size", len(data)), "is_deleted": False,
+                               "created_at": now_iso()})
+    return {"id": fid}
+
+
+@api.get("/files/{file_id}")
+async def get_file(file_id: str):
+    rec = await db.files.find_one({"id": file_id, "is_deleted": False})
+    if not rec:
+        raise HTTPException(status_code=404, detail="File not found")
+    data, ctype = await asyncio.to_thread(get_object, rec["storage_path"])
+    return Response(content=data, media_type=rec.get("content_type", ctype), headers={"Cache-Control": "public, max-age=86400"})
 
 
 # ---------- Reviews dashboard ----------
@@ -475,6 +516,11 @@ async def seed():
 @app.on_event("startup")
 async def on_startup():
     await seed()
+    try:
+        await asyncio.to_thread(init_storage)
+        logger.info("Storage initialized")
+    except Exception as e:
+        logger.error(f"Storage init failed: {e}")
 
 
 @app.on_event("shutdown")

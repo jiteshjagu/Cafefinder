@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import CafeQR from "@/components/CafeQR";
 import { Stars } from "@/components/Stars";
 import AISummary from "@/components/AISummary";
+import PhotoStrip from "@/components/PhotoStrip";
 import MenuSection from "@/components/MenuSection";
 import ReviewForm from "@/components/ReviewForm";
 import ReviewList from "@/components/ReviewList";
@@ -111,6 +112,12 @@ export default function CafeDetail() {
             <TabsContent value="overview" className="mt-6 space-y-8">
               <p className="text-lg leading-relaxed text-[#2C221E]">{cafe.description}</p>
               <AISummary cafeId={cafe.id} reviewCount={cafe.review_count} />
+              {reviews.some((r) => r.photos?.length) && (
+                <div data-testid="community-photos">
+                  <p className="font-mono-x text-xs font-semibold uppercase tracking-[0.18em] text-[#C86D3B]">From the community</p>
+                  <PhotoStrip photos={reviews.flatMap((r) => r.photos || []).slice(0, 12)} size="h-28 w-28" testid="community-photo-strip" />
+                </div>
+              )}
               <div>
                 <p className="font-mono-x mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#C86D3B]">Amenities & vibe</p>
                 <div className="flex flex-wrap gap-2">
@@ -144,7 +151,7 @@ export default function CafeDetail() {
         </aside>
       </div>
       <CafeQR cafe={cafe} open={qrOpen} onOpenChange={setQrOpen} />
-      {formOpen && <ReviewForm open={formOpen} onOpenChange={setFormOpen} cafeId={cafe.id} initial={mine && { rating: mine.rating, coffee: mine.coffee, ambience: mine.ambience, service: mine.service, value: mine.value, visit_type: mine.visit_type, text: mine.text }} onSaved={load} />}
+      {formOpen && <ReviewForm open={formOpen} onOpenChange={setFormOpen} cafeId={cafe.id} initial={mine && { rating: mine.rating, coffee: mine.coffee, ambience: mine.ambience, service: mine.service, value: mine.value, visit_type: mine.visit_type, text: mine.text, photos: mine.photos || [] }} onSaved={load} />}
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { ThumbsUp, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { Stars } from "@/components/Stars";
+import PhotoStrip from "@/components/PhotoStrip";
 import { useAuth } from "@/context/AuthContext";
 import { api, formatError } from "@/lib/api";
 
@@ -27,6 +28,7 @@ function ReviewItem({ r, onChange }) {
         <Stars value={r.rating} size={15} />
       </div>
       <p className="mt-3 leading-relaxed text-[#2C221E]">{r.text}</p>
+      <PhotoStrip photos={r.photos} testid={`review-photos-${r.id}`} />
       <div className="mt-3 flex items-center gap-4 text-xs text-[#6E5E55]">
         <span>Coffee {r.coffee} · Ambience {r.ambience} · Service {r.service} · Value {r.value}</span>
         <button onClick={helpful} data-testid={`review-helpful-${r.id}`} className="ml-auto flex items-center gap-1 hover:text-[#C86D3B]"><ThumbsUp size={13} />Helpful ({r.helpful_count})</button>
