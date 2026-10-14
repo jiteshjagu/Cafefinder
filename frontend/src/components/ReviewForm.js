@@ -27,7 +27,7 @@ export default function ReviewForm({ open, onOpenChange, cafeId, initial, onSave
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto bg-[#FAF6F0] sm:max-w-lg" data-testid="review-form-dialog">
+      <DialogContent aria-describedby={undefined} className="max-h-[90vh] overflow-y-auto bg-[#FAF6F0] sm:max-w-lg" data-testid="review-form-dialog">
         <DialogHeader><DialogTitle className="font-display text-2xl">{initial ? "Update your review" : "Share your experience"}</DialogTitle></DialogHeader>
         <form onSubmit={submit} className="space-y-6">
           <div>

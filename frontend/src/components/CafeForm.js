@@ -37,7 +37,7 @@ export default function CafeForm({ cafe, onClose, onSaved }) {
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto bg-[#FAF6F0] sm:max-w-3xl" data-testid="cafe-form-dialog">
+      <DialogContent aria-describedby={undefined} className="max-h-[90vh] overflow-y-auto bg-[#FAF6F0] sm:max-w-3xl" data-testid="cafe-form-dialog">
         <DialogHeader><DialogTitle className="font-display text-2xl">{cafe ? `Edit ${cafe.name}` : "Add a new cafe"}</DialogTitle></DialogHeader>
         <form onSubmit={save} className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">
@@ -49,8 +49,8 @@ export default function CafeForm({ cafe, onClose, onSaved }) {
               <select value={f.price_level} onChange={(e) => upd("price_level", e.target.value)} className={inp} data-testid="cafe-form-price_level">{[1, 2, 3, 4].map((p) => <option key={p} value={p}>{"$".repeat(p)}</option>)}</select></label>
             <label className="block"><span className="text-xs font-medium text-[#6E5E55]">Noise level</span>
               <select value={f.noise_level} onChange={(e) => upd("noise_level", e.target.value)} className={inp} data-testid="cafe-form-noise_level">{["Quiet", "Moderate", "Lively"].map((p) => <option key={p}>{p}</option>)}</select></label>
-            {text("open_time", "Opens (HH:MM)")}
-            {text("close_time", "Closes (HH:MM)")}
+            {text("open_time", "Opens", { type: "time" })}
+            {text("close_time", "Closes", { type: "time" })}
             {text("wifi_speed", "Wifi speed (Mbps)", { type: "number" })}
             {text("cuisines", "Food types (comma separated)")}
             {text("amenities", "Amenities (comma separated)")}

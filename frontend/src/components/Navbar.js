@@ -46,7 +46,7 @@ export default function Navbar() {
           <span className="font-display text-xl font-bold tracking-tight">BrewSpot</span>
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
-          {links.map((l) => <NavLink key={l.id} to={l.to} data-testid={l.id} className={linkCls} end>{l.label}</NavLink>)}
+          {links.map((l) => <NavLink key={l.id} to={l.to} data-testid={l.id} className={l.to.includes("?") ? linkCls({ isActive: false }) : linkCls} end>{l.label}</NavLink>)}
         </nav>
         <div className="ml-auto hidden items-center gap-3 md:flex">
           <button onClick={surprise} data-testid="nav-surprise-button" title="Surprise me" className="rounded-full p-2 text-[#2C221E] transition-colors hover:bg-[#F3EBE1]"><Shuffle size={17} /></button>
