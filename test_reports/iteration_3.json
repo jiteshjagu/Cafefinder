@@ -1,0 +1,46 @@
+{
+  "summary": "Iteration 3 validated the new 'Photos in Reviews' feature end-to-end. Backend: 12/12 new tests pass in /app/backend/tests/test_photos.py — POST /api/uploads accepts PNG for authed demo user & returns {id}, rejects unauth (401), pdf/text (400), >8MB (400); GET /api/files/{id} returns image bytes publicly with image/* content-type and 404 for unknown; POST /api/cafes/{id}/reviews accepts photos list, rejects photos not owned by the user (400) and >4 photos (422 from Pydantic max_length), editing a review (same user re-posts) updates the photos list. Frontend: logged in as demo, /cafe/<id>?review=1 auto-opens review-form-dialog showing review-photo-picker; uploading 2 PNGs via review-photo-input produces 2 review-photo-preview-<id> tiles, remove via review-photo-remove-<id> works, adding 3 more hits max=4 and review-photo-add tile hides; submit yields photo-thumb-<fileId> thumbnails that open photo-lightbox; cafe Overview shows community-photos; edit-review preloads 4 previews; reviews dashboard shows feed-photos-<reviewId>. /scan page still loads (regression ok). Existing iteration-2 test suite still green.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/uploads", "issue": "No image-content sniffing — a non-image payload sent with Content-Type: image/png would be accepted (relies on client header). Low risk because frontend uses accept='image/*', but server-side magic-byte check (e.g. imghdr) would be more defensive."},
+      {"endpoint": "POST /api/uploads", "issue": "No per-user/per-cafe rate limit on uploads; a logged-in user can upload unlimited files which all live in object storage. Consider daily cap or orphan cleanup."},
+      {"endpoint": "POST /api/cafes/{id}/reviews", "issue": "Photos attached to a prior review that is replaced are not pruned from db.files/object-storage — orphaned files remain accessible via /api/files/{id}. Non-blocking but worth a cleanup job."},
+      {"endpoint": "GET /api/files/{id}", "issue": "No ETag / 304 support; only Cache-Control header. Not critical."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "ReviewsDashboard feed card", "issues": ["feed-photos-<id> renders a <PhotoStrip> whose thumb buttons are nested inside the outer <Link to=/cafe/...>. e.stopPropagation() handles the navigation, but HTML spec disallows button-inside-anchor nesting; some browsers may still bubble on keyboard activation. Consider replacing the outer Link with a programmatic onClick or moving the strip outside the anchor."]},
+      {"screen": "PhotoPicker tile", "issues": ["Loading spinners for in-flight uploads don't carry a data-testid; adding one (e.g. review-photo-uploading) would help future tests detect in-flight state."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_photos.py",
+    "/app/backend/tests/test_brewspot_api.py",
+    "/app/test_reports/pytest/photos_results.xml"
+  ],
+  "action_items": [
+    "(optional hardening) Add magic-byte image validation on /api/uploads instead of trusting Content-Type.",
+    "(optional hygiene) When replacing a review, soft-delete photo file records that are no longer referenced.",
+    "(carry-over from iter 2) Remove last two 'Bean' string references in AISummary.js and Explore.js (unchanged this iteration).",
+    "(carry-over from iter 1) Tighten CORS_ORIGINS to the explicit public origin."
+  ],
+  "critical_code_review_comments": [
+    "ReviewIn.photos uses max_length=4 which Pydantic enforces with 422; backend 'owned' check uses len(set(photos)) so duplicate ids would be silently de-duplicated instead of 400 — minor edge case worth noting.",
+    "PhotoStrip buttons are nested inside <Link> on ReviewsDashboard — invalid HTML (button inside anchor). Works today thanks to stopPropagation but should be refactored.",
+    "No orphan file cleanup: uploaded fileIds that are never attached to a review (user cancels) remain in object storage and db.files forever.",
+    "server.py now ~535 lines — still single-module monolith; splitting (auth, cafes, reviews, uploads, admin, ai) would improve maintainability.",
+    "storage.put_object does synchronous requests; routed through asyncio.to_thread which is fine, but a shared aiohttp client would avoid per-request connection setup."
+  ],
+  "updated_files": ["/app/backend/tests/test_photos.py"],
+  "success_rate": {"backend": "100% (12/12 new photo tests, iter-2 suite 20/20 still green)", "frontend": "100% of requested photo flows"},
+  "test_credentials": "admin@brewspot.app / admin123 ; demo@brewspot.app / demo123",
+  "seed_data_creation": "Test review on first cafe (demo user) created and deleted at end of class via test_cleanup_review. Several TEST_ uploads remain in object storage/db.files — see action_items for orphan cleanup suggestion.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Photos-in-Reviews feature works end-to-end. Backend tests at /app/backend/tests/test_photos.py cover auth, mime filter, size cap, public GET, ownership check, max=4, edit-update. Frontend testids: review-photo-picker, review-photo-input, review-photo-preview-<id>, review-photo-remove-<id>, review-photo-add, photo-thumb-<fileId>, photo-lightbox, review-photos-<reviewId>, community-photos, feed-photos-<reviewId>. Note the Overview tab is default after cafe navigation — review-photos-<id> only renders inside the Reviews tab. Edit-review uses `initial.photos` and preloads them correctly.",
+  "rca of the issue": "No bug found; feature is correctly implemented. Only hygiene/defensive-coding suggestions noted."
+}

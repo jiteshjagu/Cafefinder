@@ -22,3 +22,6 @@ User choices: React + FastAPI + MongoDB, JWT email/password auth, AI barista cha
 - P1: Map view of cafes, photo uploads in reviews (object storage)
 - P1: Owner replies to reviews, review moderation queue
 - P2: Personalized "For you" feed from history/favourites, email notifications
+
+## Iteration 3 (Jun 2026)
+- Review photos: up to 4 images per review (camera capture on mobile), Emergent object storage via /api/uploads + /api/files/{id}; shown in review list w/ lightbox, "From the community" strip on cafe page, and dashboard feed

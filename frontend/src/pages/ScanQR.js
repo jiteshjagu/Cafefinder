@@ -62,7 +62,7 @@ export default function ScanQR() {
         <h1 className="font-display mt-3 text-5xl font-bold leading-tight">Scan the table code. <em className="font-medium text-[#C86D3B]">Rate in seconds.</em></h1>
         <p className="mt-4 text-lg text-[#6E5E55]">Every café has its own QR code. Scan it here, or with your phone camera, and the review form opens straight away.</p>
         <ol className="mt-8 space-y-4">
-          {["Find the Café Reviews QR on your table or receipt", "Point your camera at it, or upload a photo", "Rate the coffee, vibe & service — done"].map((s, i) => (
+          {["Find the Café Reviews QR on your table or receipt", "Point your camera at it, or upload a photo", "Rate it & snap photos of your food and table — done"].map((s, i) => (
             <li key={s} className="flex items-center gap-4"><span className="font-display grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#2C221E] text-lg text-[#FAF6F0]">{i + 1}</span><span>{s}</span></li>
           ))}
         </ol>
