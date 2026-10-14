@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
-import { Heart, Star, GitCompare, Wifi } from "lucide-react";
+import { Heart, Star, Wifi } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
-import { useCompare } from "@/context/CompareContext";
 import { priceLabel, isOpenNow } from "@/lib/api";
 
 export default function CafeCard({ cafe, big = false, index = 0 }) {
   const { user, favIds, toggleFav } = useAuth();
-  const compare = useCompare();
   const saved = favIds.includes(cafe.id);
   const open = isOpenNow(cafe.open_time, cafe.close_time);
 
@@ -32,10 +30,6 @@ export default function CafeCard({ cafe, big = false, index = 0 }) {
           <Star size={13} className="fill-[#E09F3E] text-[#E09F3E]" /> {cafe.rating_avg?.toFixed(1)} <span className="font-normal text-[#6E5E55]">({cafe.review_count})</span>
         </div>
         <div className="absolute bottom-3 right-3 flex gap-2">
-          <button onClick={(e) => { e.preventDefault(); compare.toggle(cafe); }} data-testid={`cafe-compare-toggle-${cafe.id}`} title="Compare"
-            className={`rounded-full p-2 backdrop-blur-sm transition-colors duration-200 ${compare.has(cafe.id) ? "bg-[#2C221E] text-white" : "bg-white/90 text-[#2C221E] hover:bg-white"}`}>
-            <GitCompare size={15} />
-          </button>
           <button onClick={onFav} data-testid={`cafe-favorite-toggle-${cafe.id}`} title="Save"
             className="rounded-full bg-white/90 p-2 backdrop-blur-sm transition-transform duration-200 hover:scale-110">
             <Heart size={15} className={saved ? "fill-[#C86D3B] text-[#C86D3B]" : "text-[#2C221E]"} />

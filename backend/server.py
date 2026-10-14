@@ -15,12 +15,11 @@ from typing import List, Optional
 
 from bson import ObjectId
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response
-from fastapi.responses import StreamingResponse
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field, EmailStr
 
-from emergentintegrations.llm.chat import LlmChat, UserMessage, TextDelta, StreamDone
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 from auth_utils import (hash_password, verify_password, create_access_token, create_refresh_token,
                         decode, public_user, user_from_request)
 from seed_data import CAFES, REVIEWERS, REVIEW_TEXTS
@@ -333,57 +332,42 @@ async def ai_summary(cafe_id: str):
     return data
 
 
-# ---------- AI Barista ----------
-async def catalog_text():
-    cafes = await db.cafes.find({}, {"_id": 0}).to_list(500)
-    lines = []
-    for c in cafes:
-        sig = ", ".join(f"{i['name']} (${i['price']})" for i in c.get("menu", []) if i.get("signature"))
-        lines.append(f"ID={c['id']} | {c['name']} | {c['neighborhood']} | price {'$' * c['price_level']} | rating {c['rating_avg']} "
-                     f"({c['review_count']} reviews) | food: {', '.join(c['cuisines'])} | amenities: {', '.join(c['amenities'])} | "
-                     f"vibes: {', '.join(c['vibes'])} | noise {c['noise_level']} | wifi {c['wifi_speed']}Mbps | hours "
-                     f"{c['open_time']}-{c['close_time']} | signatures: {sig}")
-    return "\n".join(lines)
+# ---------- Reviews dashboard ----------
+@api.get("/reviews")
+async def all_reviews(rating: int = 0, cafe_id: str = "", limit: int = 100):
+    q = {}
+    if rating:
+        q["rating"] = rating
+    if cafe_id:
+        q["cafe_id"] = cafe_id
+    reviews = await db.reviews.find(q, {"_id": 0, "helpful_by": 0}).sort("created_at", -1).limit(min(limit, 500)).to_list(500)
+    names = {c["id"]: c["name"] for c in await db.cafes.find({}, {"_id": 0, "id": 1, "name": 1}).to_list(1000)}
+    for r in reviews:
+        r["cafe_name"] = names.get(r["cafe_id"], "Unknown cafe")
+    return reviews
 
 
-@api.post("/barista/chat")
-async def barista_chat(body: ChatIn, request: Request):
-    user = await user_from_request(request, db, required=False)
-    history = await db.chat_messages.find({"session_id": body.session_id}, {"_id": 0}).sort("created_at", 1).to_list(40)
-    transcript = "\n".join(f"{m['role'].upper()}: {m['content']}" for m in history[-12:])
-    system = (
-        "You are 'Bean', the friendly AI Barista of BrewSpot, a cafe discovery app. Help users find the perfect cafe "
-        "from the catalog below based on mood, budget, food type, amenities and time. Be warm, concise (under 120 words), "
-        "and recommend 1-3 cafes. ALWAYS reference each recommended cafe exactly as [[cafe:ID]] on its own line, followed "
-        "by one short reason. Only recommend cafes from the catalog. Mention a signature item when relevant.\n"
-        f"{'User name: ' + user['name'] if user else ''}\nCurrent time: {datetime.now().strftime('%A %H:%M')}\n\n"
-        f"CATALOG:\n{await catalog_text()}\n\nCONVERSATION SO FAR:\n{transcript or '(none)'}"
-    )
-    await db.chat_messages.insert_one({"session_id": body.session_id, "role": "user", "content": body.message, "created_at": now_iso()})
-    chat = LlmChat(api_key=LLM_KEY, session_id=f"barista-{body.session_id}-{uuid.uuid4()}", system_message=system).with_model(*LLM_MODEL)
-
-    async def gen():
-        full = ""
-        try:
-            async for ev in chat.stream_message(UserMessage(text=body.message)):
-                if isinstance(ev, TextDelta):
-                    full += ev.content
-                    yield f"data: {json.dumps({'delta': ev.content})}\n\n"
-                elif isinstance(ev, StreamDone):
-                    break
-        except Exception as e:
-            logger.error(f"barista failed: {e}")
-            yield f"data: {json.dumps({'error': 'The barista is busy right now. Please try again.'})}\n\n"
-        if full:
-            await db.chat_messages.insert_one({"session_id": body.session_id, "role": "assistant", "content": full, "created_at": now_iso()})
-        yield f"data: {json.dumps({'done': True})}\n\n"
-
-    return StreamingResponse(gen(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
-
-
-@api.get("/barista/history/{session_id}")
-async def barista_history(session_id: str):
-    return await db.chat_messages.find({"session_id": session_id}, {"_id": 0}).sort("created_at", 1).to_list(200)
+@api.get("/reviews/dashboard")
+async def reviews_dashboard():
+    reviews = await db.reviews.find({}, {"_id": 0, "rating": 1, "coffee": 1, "ambience": 1, "service": 1, "value": 1,
+                                         "created_at": 1, "user_id": 1}).to_list(10000)
+    n = len(reviews)
+    avg = lambda k: round(sum(r[k] for r in reviews) / n, 1) if n else 0
+    since = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+    today = datetime.now(timezone.utc).date()
+    days = [(today - timedelta(days=i)) for i in range(29, -1, -1)]
+    counts = {}
+    for r in reviews:
+        counts[r["created_at"][:10]] = counts.get(r["created_at"][:10], 0) + 1
+    return {
+        "total": n, "avg_rating": avg("rating"), "reviewers": len({r["user_id"] for r in reviews}),
+        "last_30_days": sum(1 for r in reviews if r["created_at"] >= since),
+        "distribution": {str(i): sum(1 for r in reviews if r["rating"] == i) for i in range(1, 6)},
+        "aspects": {k: avg(k) for k in ["coffee", "ambience", "service", "value"]},
+        "timeline": [{"date": d.strftime("%b %d"), "count": counts.get(d.isoformat(), 0)} for d in days],
+        "leaderboard": await db.cafes.find({}, {"_id": 0, "id": 1, "name": 1, "images": 1, "rating_avg": 1, "review_count": 1})
+        .sort([("rating_avg", -1), ("review_count", -1)]).to_list(100),
+    }
 
 
 # ---------- Favorites ----------
@@ -413,7 +397,7 @@ async def toggle_favorite(cafe_id: str, request: Request):
 async def admin_stats(request: Request):
     await require_admin(request)
     return {"cafes": await db.cafes.count_documents({}), "reviews": await db.reviews.count_documents({}),
-            "users": await db.users.count_documents({}), "chats": await db.chat_messages.count_documents({"role": "user"}),
+            "users": await db.users.count_documents({}), "avg_rating": (await reviews_dashboard())["avg_rating"],
             "recent_reviews": await db.reviews.find({}, {"_id": 0, "helpful_by": 0}).sort("created_at", -1).limit(8).to_list(8)}
 
 

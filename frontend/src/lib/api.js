@@ -29,4 +29,3 @@ export function isOpenNow(open, close) {
   return c > o ? cur >= o && cur < c : cur >= o || cur < c;
 }
 
-export const openBarista = (prompt) => window.dispatchEvent(new CustomEvent("open-barista", { detail: prompt }));

@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import { Coffee } from "lucide-react";
+import Logo from "@/components/Logo";
 
 export default function Footer() {
   return (
     <footer className="mt-24 bg-[#2C221E] text-[#F5EFE8]">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-16 md:grid-cols-12 md:px-8">
         <div className="md:col-span-6">
-          <div className="flex items-center gap-2"><Coffee size={20} /><span className="font-display text-2xl font-bold">BrewSpot</span></div>
+          <Logo light />
           <p className="font-display mt-4 max-w-md text-3xl italic leading-snug text-[#E09F3E]">"Life happens, coffee helps."</p>
         </div>
         <div className="md:col-span-3">
@@ -22,12 +22,13 @@ export default function Footer() {
           <p className="font-mono-x text-xs uppercase tracking-[0.18em] text-[#A89A8E]">You</p>
           <div className="mt-4 flex flex-col gap-2 text-sm">
             <Link to="/favorites" className="hover:text-[#E09F3E]">Saved cafes</Link>
-            <Link to="/compare" className="hover:text-[#E09F3E]">Compare</Link>
+            <Link to="/reviews" className="hover:text-[#E09F3E]">Reviews dashboard</Link>
+            <Link to="/scan" className="hover:text-[#E09F3E]">Scan to review</Link>
             <Link to="/login" className="hover:text-[#E09F3E]">Log in</Link>
           </div>
         </div>
       </div>
-      <div className="border-t border-[#362A23] py-6 text-center text-xs text-[#A89A8E]">© {new Date().getFullYear()} BrewSpot · Brewed with care</div>
+      <div className="border-t border-[#362A23] py-6 text-center text-xs text-[#A89A8E]">© {new Date().getFullYear()} Café’ Reviews · Brewed with care</div>
     </footer>
   );
 }

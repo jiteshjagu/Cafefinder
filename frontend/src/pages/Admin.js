@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Pencil, Trash2, Coffee, MessageSquare, Users, Sparkles } from "lucide-react";
+import { Plus, Pencil, Trash2, Coffee, MessageSquare, Users, Star, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { api, priceLabel, formatError } from "@/lib/api";
 import CafeForm from "@/components/CafeForm";
+import CafeQR from "@/components/CafeQR";
 
 export default function Admin() {
   const [stats, setStats] = useState(null);
   const [cafes, setCafes] = useState([]);
   const [editing, setEditing] = useState(undefined);
   const [deleting, setDeleting] = useState(null);
+  const [qr, setQr] = useState(null);
 
   const load = useCallback(() => {
     api.get("/admin/stats").then(({ data }) => setStats(data));
@@ -24,7 +26,7 @@ export default function Admin() {
     setDeleting(null);
   };
 
-  const cards = stats ? [[Coffee, "Cafes", stats.cafes], [MessageSquare, "Reviews", stats.reviews], [Users, "Users", stats.users], [Sparkles, "AI chats", stats.chats]] : [];
+  const cards = stats ? [[Coffee, "Cafes", stats.cafes], [MessageSquare, "Reviews", stats.reviews], [Users, "Users", stats.users], [Star, "Avg rating", stats.avg_rating]] : [];
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-12 md:px-8">
@@ -56,6 +58,7 @@ export default function Admin() {
                   <td className="p-4">{c.rating_avg} ({c.review_count})</td>
                   <td className="p-4 text-[#6E5E55]">{c.cuisines.slice(0, 2).join(", ")}</td>
                   <td className="p-4 text-right">
+                    <button onClick={() => setQr(c)} data-testid={`admin-qr-cafe-${c.id}`} title="Review QR" className="rounded-full p-2 hover:bg-[#F3EBE1]"><QrCode size={15} /></button>
                     <button onClick={() => edit(c.id)} data-testid={`admin-edit-cafe-${c.id}`} className="rounded-full p-2 hover:bg-[#F3EBE1]"><Pencil size={15} /></button>
                     <button onClick={() => setDeleting(c)} data-testid={`admin-delete-cafe-${c.id}`} className="rounded-full p-2 text-red-600 hover:bg-red-50"><Trash2 size={15} /></button>
                   </td>
@@ -75,6 +78,7 @@ export default function Admin() {
       </div>
 
       {editing !== undefined && <CafeForm cafe={editing} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); load(); }} />}
+      <CafeQR cafe={qr} open={!!qr} onOpenChange={(o) => !o && setQr(null)} />
       <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
         <AlertDialogContent>
           <AlertDialogHeader><AlertDialogTitle>Delete {deleting?.name}?</AlertDialogTitle><AlertDialogDescription>This removes the cafe and all its reviews permanently.</AlertDialogDescription></AlertDialogHeader>

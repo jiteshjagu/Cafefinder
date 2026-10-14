@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Heart, MapPin, Clock, Wifi, Volume2, PenLine, GitCompare, Share2, Sparkles } from "lucide-react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { Heart, MapPin, Clock, Wifi, Volume2, PenLine, Share2, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { api, priceLabel, isOpenNow, openBarista } from "@/lib/api";
+import { api, priceLabel, isOpenNow } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
-import { useCompare } from "@/context/CompareContext";
+import CafeQR from "@/components/CafeQR";
 import { Stars } from "@/components/Stars";
 import AISummary from "@/components/AISummary";
 import MenuSection from "@/components/MenuSection";
@@ -45,7 +45,8 @@ export default function CafeDetail() {
   const { id } = useParams();
   const nav = useNavigate();
   const { user, favIds, toggleFav } = useAuth();
-  const compare = useCompare();
+  const [params, setParams] = useSearchParams();
+  const [qrOpen, setQrOpen] = useState(false);
   const [cafe, setCafe] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [sort, setSort] = useState("newest");
@@ -56,6 +57,12 @@ export default function CafeDetail() {
     api.get(`/cafes/${id}/reviews?sort=${sort}`).then(({ data }) => setReviews(data));
   }, [id, sort, nav]);
   useEffect(load, [load]);
+  useEffect(() => {
+    if (params.get("review") !== "1" || user === null || !cafe) return;
+    if (!user) { toast.info("Log in to leave your review"); nav(`/login?next=${encodeURIComponent(`/cafe/${id}?review=1`)}`); return; }
+    setFormOpen(true);
+    setParams({}, { replace: true });
+  }, [params, user, cafe, id, nav, setParams]);
 
   if (!cafe) return <div className="mx-auto max-w-7xl px-8 py-20"><div className="h-96 animate-pulse rounded-3xl bg-[#F3EBE1]" /></div>;
 
@@ -64,7 +71,7 @@ export default function CafeDetail() {
   const saved = favIds.includes(cafe.id);
   const imgs = cafe.images?.length ? cafe.images : [""];
 
-  const writeReview = () => { if (!user) { toast.error("Log in to write a review"); return nav("/login"); } setFormOpen(true); };
+  const writeReview = () => { if (!user) { toast.error("Log in to write a review"); return nav(`/login?next=${encodeURIComponent(`/cafe/${id}?review=1`)}`); } setFormOpen(true); };
   const fav = async () => { if (!user) return toast.error("Log in to save cafes"); const s = await toggleFav(cafe.id); toast.success(s ? "Saved to your list" : "Removed"); };
   const share = () => { navigator.clipboard?.writeText(window.location.href); toast.success("Link copied"); };
 
@@ -130,14 +137,13 @@ export default function CafeDetail() {
               <Heart size={16} className={saved ? "fill-[#C86D3B] text-[#C86D3B]" : ""} />{saved ? "Saved" : "Save cafe"}
             </button>
             <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => compare.toggle(cafe)} data-testid="cafe-detail-compare-btn" className="flex items-center justify-center gap-2 rounded-full bg-[#F3EBE1] py-2.5 text-sm font-medium hover:bg-[#E4DACF]"><GitCompare size={14} />{compare.has(cafe.id) ? "Added" : "Compare"}</button>
+              <button onClick={() => setQrOpen(true)} data-testid="cafe-detail-qr-btn" className="flex items-center justify-center gap-2 rounded-full bg-[#F3EBE1] py-2.5 text-sm font-medium hover:bg-[#E4DACF]"><QrCode size={14} />Review QR</button>
               <button onClick={share} data-testid="cafe-detail-share-btn" className="flex items-center justify-center gap-2 rounded-full bg-[#F3EBE1] py-2.5 text-sm font-medium hover:bg-[#E4DACF]"><Share2 size={14} />Share</button>
             </div>
-            <button onClick={() => openBarista(`What should I order at ${cafe.name}? And suggest similar cafes.`)} data-testid="cafe-detail-ask-bean-btn"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2C221E] py-3 text-sm text-[#FAF6F0] hover:bg-[#3d302a]"><Sparkles size={14} className="text-[#E09F3E]" />What should I order here?</button>
           </div>
         </aside>
       </div>
+      <CafeQR cafe={cafe} open={qrOpen} onOpenChange={setQrOpen} />
       {formOpen && <ReviewForm open={formOpen} onOpenChange={setFormOpen} cafeId={cafe.id} initial={mine && { rating: mine.rating, coffee: mine.coffee, ambience: mine.ambience, service: mine.service, value: mine.value, visit_type: mine.visit_type, text: mine.text }} onSaved={load} />}
     </div>
   );
