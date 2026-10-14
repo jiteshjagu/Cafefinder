@@ -7,8 +7,12 @@ APP_NAME = "cafe-reviews"
 _storage_key = None
 
 
+from pathlib import Path
+
 def init_storage(force: bool = False):
     global _storage_key
+    if not os.environ.get("EMERGENT_LLM_KEY"):
+        return "local"
     if _storage_key and not force:
         return _storage_key
     resp = requests.post(f"{STORAGE_URL}/init", json={"emergent_key": os.environ["EMERGENT_LLM_KEY"]}, timeout=30)
@@ -28,9 +32,20 @@ def _request(method: str, path: str, **kw):
 
 
 def put_object(path: str, data: bytes, content_type: str) -> dict:
+    if not os.environ.get("EMERGENT_LLM_KEY"):
+        local_dir = Path(__file__).parent / "uploads"
+        local_dir.mkdir(parents=True, exist_ok=True)
+        fname = path.replace("/", "_")
+        fpath = local_dir / fname
+        fpath.write_bytes(data)
+        return {"path": str(fpath), "size": len(data)}
     return _request("PUT", path, headers={"Content-Type": content_type}, data=data, timeout=120).json()
 
 
 def get_object(path: str):
+    if not os.environ.get("EMERGENT_LLM_KEY"):
+        fpath = Path(path)
+        if fpath.exists():
+            return fpath.read_bytes(), "application/octet-stream"
     resp = _request("GET", path, timeout=60)
     return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
