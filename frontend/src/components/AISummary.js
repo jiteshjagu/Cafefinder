@@ -16,7 +16,7 @@ export default function AISummary({ cafeId, reviewCount }) {
   return (
     <div className="rounded-2xl border border-[#C86D3B]/30 bg-gradient-to-br from-[#F3EBE1] to-[#FAF6F0] p-6" data-testid="ai-summary-box">
       <span className="font-mono-x mb-3 inline-flex items-center gap-2 rounded-full bg-[#C86D3B]/10 px-3 py-1 text-xs font-bold text-[#C86D3B]"><Sparkles size={12} />AI REVIEW SUMMARY</span>
-      {loading && <div className="space-y-2"><div className="h-4 w-full animate-pulse rounded bg-[#E4DACF]" /><div className="h-4 w-4/5 animate-pulse rounded bg-[#E4DACF]" /><p className="text-xs text-[#6E5E55]">Bean is reading every review...</p></div>}
+      {loading && <div className="space-y-2"><div className="h-4 w-full animate-pulse rounded bg-[#E4DACF]" /><div className="h-4 w-4/5 animate-pulse rounded bg-[#E4DACF]" /><p className="text-xs text-[#6E5E55]">Reading every review...</p></div>}
       {err && <p className="text-sm text-[#6E5E55]">{err} <button onClick={load} className="ml-2 inline-flex items-center gap-1 text-[#C86D3B]" data-testid="ai-summary-retry"><RefreshCw size={12} />Retry</button></p>}
       {data && !loading && (
         <div>

@@ -1,4 +1,4 @@
-# BrewSpot — Cafe Review & Recommendation System
+# Café’ Reviews (formerly BrewSpot) — Cafe Review & Recommendation System
 
 ## Original problem
 Search cafes, view menus, rate & review, find cafes by price / food type / rating. Add essential features for easy use & management.
@@ -8,8 +8,13 @@ User choices: React + FastAPI + MongoDB, JWT email/password auth, AI barista cha
 - JWT auth (Bearer + httpOnly cookies), brute-force lockout, admin/demo seeding
 - 10 seeded cafes w/ menus, 28 reviews; search, filters (price, rating, food type, amenities, neighbourhood), sort
 - Cafe detail: gallery, open-now status, stats strip, menu w/ categories + veg filter, rating breakdown + sub-ratings, reviews (one per user, edit/delete, helpful votes, sort)
-- AI review summary (cached by review count), AI Barista "Bean" streaming chat with clickable cafe recommendation cards, persistent history
-- Favorites + my reviews page, Compare up to 3 cafes, Surprise-me random cafe, share link
+- AI review summary (cached by review count)
+- Favorites + my reviews page, Surprise-me random cafe, share link
+
+## Iteration 2 (Jun 2026)
+- Rebranded to "Café’ Reviews" stylish logo; removed Compare, AI chatbot, Date-night mood
+- Reviews Dashboard (/reviews): KPIs, rating distribution, 30-day timeline, leaderboard, aspect averages, filterable feed
+- QR reviews: per-cafe QR (detail + admin) linking to /cafe/:id?review=1 which auto-opens review form (login redirect w/ next); /scan page with camera + image upload scanner (html5-qrcode)
 - Admin dashboard: stats, cafe CRUD incl. menu items, recent reviews
 - Tested: backend 25/25, frontend all critical flows pass
 

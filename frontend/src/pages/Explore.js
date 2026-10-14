@@ -90,7 +90,7 @@ export default function Explore() {
           {cafes && cafes.length === 0 && (
             <div className="rounded-2xl border border-dashed border-[#E4DACF] p-16 text-center" data-testid="explore-empty-state">
               <p className="font-display text-2xl">No cafes match those filters.</p>
-              <p className="mt-2 text-sm text-[#6E5E55]">Try removing a filter or ask Bean for ideas.</p>
+              <p className="mt-2 text-sm text-[#6E5E55]">Try removing a filter or searching something else.</p>
             </div>
           )}
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
