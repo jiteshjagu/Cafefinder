@@ -7,7 +7,7 @@
 body {
     margin: 0;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background: #FAF6F0;
+    background: #FFFFFF;
     color: #2C221E;
     -webkit-font-smoothing: antialiased;
 }
@@ -16,16 +16,10 @@ body {
 .font-mono-x { font-family: 'JetBrains Mono', monospace; }
 
 .grain::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 100;
-    opacity: 0.05;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    display: none;
 }
 
-::selection { background: #C86D3B; color: #fff; }
+::selection { background: #D3B683; color: #2C221E; }
 
 @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 .rise { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
@@ -40,25 +34,25 @@ body {
 
 @layer base {
     :root {
-        --background: 36 50% 96%;
+        --background: 0 0% 100%;
         --foreground: 18 19% 15%;
         --card: 0 0% 100%;
         --card-foreground: 18 19% 15%;
         --popover: 0 0% 100%;
         --popover-foreground: 18 19% 15%;
-        --primary: 21 57% 51%;
-        --primary-foreground: 0 0% 100%;
-        --secondary: 32 42% 92%;
+        --primary: 38 48% 67%;
+        --primary-foreground: 18 19% 15%;
+        --secondary: 38 35% 95%;
         --secondary-foreground: 18 19% 15%;
-        --muted: 32 42% 92%;
+        --muted: 38 35% 95%;
         --muted-foreground: 22 12% 38%;
-        --accent: 32 42% 92%;
+        --accent: 38 48% 67%;
         --accent-foreground: 18 19% 15%;
         --destructive: 0 70% 50%;
         --destructive-foreground: 0 0% 98%;
-        --border: 30 27% 85%;
-        --input: 30 27% 85%;
-        --ring: 21 57% 51%;
+        --border: 38 25% 90%;
+        --input: 38 25% 90%;
+        --ring: 38 48% 67%;
         --radius: 0.75rem;
     }
 }

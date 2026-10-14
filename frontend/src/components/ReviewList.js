@@ -18,9 +18,9 @@ function ReviewItem({ r, onChange }) {
   };
   const canDelete = user && (user.id === r.user_id || user.role === "admin");
   return (
-    <article className="border-b border-[#E4DACF] py-6" data-testid={`review-item-${r.id}`}>
+    <article className="border-b border-[#EFE6D8] py-6" data-testid={`review-item-${r.id}`}>
       <div className="flex items-center gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-[#2C221E] font-display text-[#FAF6F0]">{r.user_name?.[0]}</span>
+        <span className="grid h-10 w-10 place-items-center rounded-full bg-[#2C221E] font-display text-white">{r.user_name?.[0]}</span>
         <div className="flex-1">
           <p className="font-semibold">{r.user_name}</p>
           <p className="text-xs text-[#6E5E55]">{r.visit_type} visit · {formatDistanceToNow(new Date(r.created_at), { addSuffix: true })}</p>
@@ -31,7 +31,7 @@ function ReviewItem({ r, onChange }) {
       <PhotoStrip photos={r.photos} testid={`review-photos-${r.id}`} />
       <div className="mt-3 flex items-center gap-4 text-xs text-[#6E5E55]">
         <span>Coffee {r.coffee} · Ambience {r.ambience} · Service {r.service} · Value {r.value}</span>
-        <button onClick={helpful} data-testid={`review-helpful-${r.id}`} className="ml-auto flex items-center gap-1 hover:text-[#C86D3B]"><ThumbsUp size={13} />Helpful ({r.helpful_count})</button>
+        <button onClick={helpful} data-testid={`review-helpful-${r.id}`} className="ml-auto flex items-center gap-1 hover:text-[#9E7738]"><ThumbsUp size={13} />Helpful ({r.helpful_count})</button>
         {canDelete && <button onClick={remove} data-testid={`review-delete-${r.id}`} className="hover:text-red-600"><Trash2 size={13} /></button>}
       </div>
     </article>

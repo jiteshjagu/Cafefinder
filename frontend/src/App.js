@@ -24,7 +24,7 @@ function Protected({ children, admin }) {
 
 function App() {
   return (
-    <div className="App grain">
+    <div className="App bg-white">
       <BrowserRouter>
         <AuthProvider>
           <Navbar />

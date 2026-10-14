@@ -28,7 +28,7 @@ export default function ReviewForm({ open, onOpenChange, cafeId, initial, onSave
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent aria-describedby={undefined} className="max-h-[90vh] overflow-y-auto bg-[#FAF6F0] sm:max-w-lg" data-testid="review-form-dialog">
+      <DialogContent aria-describedby={undefined} className="max-h-[90vh] overflow-y-auto border border-[#EFE6D8] bg-white sm:max-w-lg" data-testid="review-form-dialog">
         <DialogHeader><DialogTitle className="font-display text-2xl">{initial ? "Update your review" : "Share your experience"}</DialogTitle></DialogHeader>
         <form onSubmit={submit} className="space-y-6">
           <div>
@@ -45,14 +45,14 @@ export default function ReviewForm({ open, onOpenChange, cafeId, initial, onSave
             <div className="flex flex-wrap gap-2">
               {VISITS.map((v) => (
                 <button type="button" key={v} onClick={() => upd("visit_type", v)} data-testid={`review-visit-${v}`}
-                  className={`rounded-full border px-3 py-1 text-xs ${f.visit_type === v ? "border-[#2C221E] bg-[#2C221E] text-white" : "border-[#E4DACF] bg-white"}`}>{v}</button>
+                  className={`rounded-full border px-3 py-1 text-xs ${f.visit_type === v ? "border-[#2C221E] bg-[#2C221E] text-white" : "border-[#EFE6D8] bg-white text-[#2C221E]"}`}>{v}</button>
               ))}
             </div>
           </div>
           <textarea value={f.text} onChange={(e) => upd("text", e.target.value)} rows={5} placeholder="What did you order? How was the vibe? (min 10 characters)" data-testid="review-text-input"
-            className="w-full rounded-xl border border-[#E4DACF] bg-white p-4 text-sm outline-none focus:border-[#C86D3B]" />
+            className="w-full rounded-xl border border-[#EFE6D8] bg-white p-4 text-sm outline-none focus:border-[#D3B683]" />
           <PhotoPicker photos={f.photos || []} onChange={(v) => upd("photos", v)} />
-          <button disabled={busy} data-testid="review-submit-button" className="w-full rounded-full bg-[#C86D3B] py-3 font-semibold text-white transition-colors hover:bg-[#A85528] disabled:opacity-60">
+          <button disabled={busy} data-testid="review-submit-button" className="w-full rounded-full bg-[#D3B683] py-3 font-semibold text-[#2C221E] transition-colors hover:bg-[#C2A36E] disabled:opacity-60">
             {busy ? "Posting..." : initial ? "Update review" : "Post review"}
           </button>
         </form>

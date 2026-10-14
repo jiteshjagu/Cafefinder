@@ -32,34 +32,34 @@ export default function Admin() {
     <div className="mx-auto max-w-7xl px-5 py-12 md:px-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="font-mono-x text-xs font-semibold uppercase tracking-[0.18em] text-[#C86D3B]">Back of house</p>
+          <p className="font-mono-x text-xs font-semibold uppercase tracking-[0.18em] text-[#9E7738]">Back of house</p>
           <h1 className="font-display mt-3 text-4xl font-bold sm:text-5xl">Admin dashboard</h1>
         </div>
-        <button onClick={() => setEditing(null)} data-testid="admin-add-cafe-btn" className="flex items-center gap-2 rounded-full bg-[#C86D3B] px-5 py-3 font-semibold text-white hover:bg-[#A85528]"><Plus size={16} />Add cafe</button>
+        <button onClick={() => setEditing(null)} data-testid="admin-add-cafe-btn" className="flex items-center gap-2 rounded-full bg-[#D3B683] px-5 py-3 font-semibold text-[#2C221E] hover:bg-[#C2A36E]"><Plus size={16} />Add cafe</button>
       </div>
 
       <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4" data-testid="admin-stats">
         {cards.map(([I, l, v]) => (
-          <div key={l} className="rounded-2xl border border-[#E4DACF] bg-white p-6"><I className="text-[#C86D3B]" size={20} /><p className="font-display mt-4 text-4xl font-bold">{v}</p><p className="text-sm text-[#6E5E55]">{l}</p></div>
+          <div key={l} className="rounded-2xl border border-[#EFE6D8] bg-white p-6 shadow-sm"><I className="text-[#9E7738]" size={20} /><p className="font-display mt-4 text-4xl font-bold">{v}</p><p className="text-sm text-[#6E5E55]">{l}</p></div>
         ))}
       </div>
 
       <div className="mt-10 grid gap-8 lg:grid-cols-12">
-        <div className="overflow-x-auto rounded-2xl border border-[#E4DACF] bg-white lg:col-span-8">
+        <div className="overflow-x-auto rounded-2xl border border-[#EFE6D8] bg-white shadow-sm lg:col-span-8">
           <table className="w-full min-w-[560px] text-sm" data-testid="admin-cafe-table">
-            <thead className="bg-[#F3EBE1] text-left text-xs uppercase tracking-wider text-[#6E5E55]">
+            <thead className="bg-[#FAF7F2] text-left text-xs uppercase tracking-wider text-[#6E5E55]">
               <tr><th className="p-4">Cafe</th><th className="p-4">Price</th><th className="p-4">Rating</th><th className="p-4">Menu</th><th className="p-4" /></tr>
             </thead>
             <tbody>
               {cafes.map((c) => (
-                <tr key={c.id} className="border-t border-[#F3EBE1]" data-testid={`admin-cafe-row-${c.id}`}>
-                  <td className="p-4"><Link to={`/cafe/${c.id}`} className="flex items-center gap-3 hover:text-[#C86D3B]"><img src={c.images?.[0]} alt="" className="h-10 w-10 rounded-lg object-cover" /><span className="font-semibold">{c.name}</span></Link></td>
+                <tr key={c.id} className="border-t border-[#EFE6D8]" data-testid={`admin-cafe-row-${c.id}`}>
+                  <td className="p-4"><Link to={`/cafe/${c.id}`} className="flex items-center gap-3 hover:text-[#9E7738]"><img src={c.images?.[0]} alt="" className="h-10 w-10 rounded-lg object-cover" /><span className="font-semibold">{c.name}</span></Link></td>
                   <td className="font-mono-x p-4">{priceLabel(c.price_level)}</td>
                   <td className="p-4">{c.rating_avg} ({c.review_count})</td>
                   <td className="p-4 text-[#6E5E55]">{c.cuisines.slice(0, 2).join(", ")}</td>
                   <td className="p-4 text-right">
-                    <button onClick={() => setQr(c)} data-testid={`admin-qr-cafe-${c.id}`} title="Review QR" className="rounded-full p-2 hover:bg-[#F3EBE1]"><QrCode size={15} /></button>
-                    <button onClick={() => edit(c.id)} data-testid={`admin-edit-cafe-${c.id}`} className="rounded-full p-2 hover:bg-[#F3EBE1]"><Pencil size={15} /></button>
+                    <button onClick={() => setQr(c)} data-testid={`admin-qr-cafe-${c.id}`} title="Review QR" className="rounded-full p-2 hover:bg-[#FAF7F2]"><QrCode size={15} /></button>
+                    <button onClick={() => edit(c.id)} data-testid={`admin-edit-cafe-${c.id}`} className="rounded-full p-2 hover:bg-[#FAF7F2]"><Pencil size={15} /></button>
                     <button onClick={() => setDeleting(c)} data-testid={`admin-delete-cafe-${c.id}`} className="rounded-full p-2 text-red-600 hover:bg-red-50"><Trash2 size={15} /></button>
                   </td>
                 </tr>
@@ -67,10 +67,10 @@ export default function Admin() {
             </tbody>
           </table>
         </div>
-        <div className="rounded-2xl border border-[#E4DACF] bg-white p-6 lg:col-span-4" data-testid="admin-recent-reviews">
+        <div className="rounded-2xl border border-[#EFE6D8] bg-white p-6 shadow-sm lg:col-span-4" data-testid="admin-recent-reviews">
           <p className="font-display text-xl font-semibold">Latest reviews</p>
           {stats?.recent_reviews.map((r) => (
-            <Link key={r.id} to={`/cafe/${r.cafe_id}`} className="block border-b border-[#F3EBE1] py-3 text-sm hover:text-[#C86D3B]">
+            <Link key={r.id} to={`/cafe/${r.cafe_id}`} className="block border-b border-[#EFE6D8] py-3 text-sm hover:text-[#9E7738]">
               <p className="font-semibold">{r.user_name} · {r.rating}★</p><p className="line-clamp-2 text-[#6E5E55]">{r.text}</p>
             </Link>
           ))}

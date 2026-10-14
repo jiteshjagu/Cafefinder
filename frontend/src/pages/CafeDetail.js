@@ -25,7 +25,7 @@ function Breakdown({ cafe }) {
           {[5, 4, 3, 2, 1].map((s) => (
             <div key={s} className="flex items-center gap-2 text-xs">
               <span className="w-3">{s}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-[#F3EBE1]"><div className="h-full rounded-full bg-[#E09F3E]" style={{ width: `${((cafe.rating_dist?.[s] || 0) / total) * 100}%` }} /></div>
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-[#FAF7F2]"><div className="h-full rounded-full bg-[#D3B683]" style={{ width: `${((cafe.rating_dist?.[s] || 0) / total) * 100}%` }} /></div>
             </div>
           ))}
         </div>
@@ -34,7 +34,7 @@ function Breakdown({ cafe }) {
         {Object.entries(cafe.sub_ratings || {}).map(([k, v]) => (
           <div key={k}>
             <div className="flex justify-between text-sm"><span className="capitalize">{k}</span><span className="font-mono-x font-semibold">{v}</span></div>
-            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-[#F3EBE1]"><div className="h-full rounded-full bg-[#C86D3B]" style={{ width: `${(v / 5) * 100}%` }} /></div>
+            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-[#FAF7F2]"><div className="h-full rounded-full bg-[#D3B683]" style={{ width: `${(v / 5) * 100}%` }} /></div>
           </div>
         ))}
       </div>
@@ -92,19 +92,19 @@ export default function CafeDetail() {
 
       <div className="mt-10 grid gap-12 lg:grid-cols-12">
         <div className="lg:col-span-8">
-          <p className="font-mono-x text-xs font-semibold uppercase tracking-[0.18em] text-[#C86D3B]">{cafe.neighborhood} · {priceLabel(cafe.price_level)} · {cafe.cuisines.join(" / ")}</p>
+          <p className="font-mono-x text-xs font-semibold uppercase tracking-[0.18em] text-[#9E7738]">{cafe.neighborhood} · {priceLabel(cafe.price_level)} · {cafe.cuisines.join(" / ")}</p>
           <h1 className="font-display mt-3 text-4xl font-bold sm:text-6xl" data-testid="cafe-detail-name">{cafe.name}</h1>
           <p className="font-display mt-2 text-xl italic text-[#6E5E55]">{cafe.tagline}</p>
           <div className="mt-4 flex items-center gap-3"><Stars value={cafe.rating_avg} /><span className="font-semibold" data-testid="cafe-detail-rating">{cafe.rating_avg?.toFixed(1)}</span><span className="text-sm text-[#6E5E55]">({cafe.review_count} reviews)</span></div>
 
-          <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-[#E4DACF] bg-[#E4DACF] sm:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-[#EFE6D8] bg-[#EFE6D8] sm:grid-cols-4">
             {stats.map(([I, v, l]) => (
-              <div key={l} className="bg-white p-4"><I size={16} className={l === "Opening" || (I === Clock && open) ? "text-[#6B8E23]" : "text-[#C86D3B]"} /><p className="mt-2 font-semibold">{v}</p><p className="text-xs text-[#6E5E55]">{l}</p></div>
+              <div key={l} className="bg-white p-4"><I size={16} className={l === "Opening" || (I === Clock && open) ? "text-[#6B8E23]" : "text-[#9E7738]"} /><p className="mt-2 font-semibold">{v}</p><p className="text-xs text-[#6E5E55]">{l}</p></div>
             ))}
           </div>
 
           <Tabs defaultValue="overview" className="mt-10">
-            <TabsList className="bg-[#F3EBE1]">
+            <TabsList className="border border-[#EFE6D8] bg-[#FAF7F2]">
               <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
               <TabsTrigger value="menu" data-testid="tab-menu">Menu</TabsTrigger>
               <TabsTrigger value="reviews" data-testid="tab-reviews">Reviews ({cafe.review_count})</TabsTrigger>
@@ -114,15 +114,15 @@ export default function CafeDetail() {
               <AISummary cafeId={cafe.id} reviewCount={cafe.review_count} />
               {reviews.some((r) => r.photos?.length) && (
                 <div data-testid="community-photos">
-                  <p className="font-mono-x text-xs font-semibold uppercase tracking-[0.18em] text-[#C86D3B]">From the community</p>
+                  <p className="font-mono-x text-xs font-semibold uppercase tracking-[0.18em] text-[#9E7738]">From the community</p>
                   <PhotoStrip photos={reviews.flatMap((r) => r.photos || []).slice(0, 12)} size="h-28 w-28" testid="community-photo-strip" />
                 </div>
               )}
               <div>
-                <p className="font-mono-x mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#C86D3B]">Amenities & vibe</p>
+                <p className="font-mono-x mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#9E7738]">Amenities & vibe</p>
                 <div className="flex flex-wrap gap-2">
-                  {cafe.amenities.map((a) => <span key={a} className="rounded-full border border-[#E4DACF] bg-white px-3 py-1.5 text-sm">{a}</span>)}
-                  {cafe.vibes.map((a) => <span key={a} className="rounded-full bg-[#2C221E] px-3 py-1.5 text-sm text-[#FAF6F0]">{a}</span>)}
+                  {cafe.amenities.map((a) => <span key={a} className="rounded-full border border-[#EFE6D8] bg-white px-3 py-1.5 text-sm">{a}</span>)}
+                  {cafe.vibes.map((a) => <span key={a} className="rounded-full bg-[#2C221E] px-3 py-1.5 text-sm text-white">{a}</span>)}
                 </div>
               </div>
               <p className="flex items-center gap-2 text-sm text-[#6E5E55]"><MapPin size={15} />{cafe.address}</p>
@@ -136,16 +136,16 @@ export default function CafeDetail() {
         </div>
 
         <aside className="lg:col-span-4">
-          <div className="sticky top-24 space-y-3 rounded-2xl border border-[#E4DACF] bg-white p-6">
-            <button onClick={writeReview} data-testid="cafe-detail-write-review-btn" className="flex w-full items-center justify-center gap-2 rounded-full bg-[#C86D3B] py-3 font-semibold text-white transition-colors hover:bg-[#A85528]">
+          <div className="sticky top-24 space-y-3 rounded-2xl border border-[#EFE6D8] bg-white p-6 shadow-sm">
+            <button onClick={writeReview} data-testid="cafe-detail-write-review-btn" className="flex w-full items-center justify-center gap-2 rounded-full bg-[#D3B683] py-3 font-semibold text-[#2C221E] transition-colors hover:bg-[#C2A36E]">
               <PenLine size={16} />{mine ? "Edit your review" : "Write a review"}
             </button>
             <button onClick={fav} data-testid="cafe-detail-save-btn" className="flex w-full items-center justify-center gap-2 rounded-full border border-[#2C221E] py-3 font-semibold transition-colors hover:bg-[#2C221E] hover:text-white">
-              <Heart size={16} className={saved ? "fill-[#C86D3B] text-[#C86D3B]" : ""} />{saved ? "Saved" : "Save cafe"}
+              <Heart size={16} className={saved ? "fill-[#D3B683] text-[#D3B683]" : ""} />{saved ? "Saved" : "Save cafe"}
             </button>
             <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => setQrOpen(true)} data-testid="cafe-detail-qr-btn" className="flex items-center justify-center gap-2 rounded-full bg-[#F3EBE1] py-2.5 text-sm font-medium hover:bg-[#E4DACF]"><QrCode size={14} />Review QR</button>
-              <button onClick={share} data-testid="cafe-detail-share-btn" className="flex items-center justify-center gap-2 rounded-full bg-[#F3EBE1] py-2.5 text-sm font-medium hover:bg-[#E4DACF]"><Share2 size={14} />Share</button>
+              <button onClick={() => setQrOpen(true)} data-testid="cafe-detail-qr-btn" className="flex items-center justify-center gap-2 rounded-full border border-[#EFE6D8] bg-[#FAF7F2] py-2.5 text-sm font-medium text-[#2C221E] hover:bg-[#EFE6D8]"><QrCode size={14} />Review QR</button>
+              <button onClick={share} data-testid="cafe-detail-share-btn" className="flex items-center justify-center gap-2 rounded-full border border-[#EFE6D8] bg-[#FAF7F2] py-2.5 text-sm font-medium text-[#2C221E] hover:bg-[#EFE6D8]"><Share2 size={14} />Share</button>
             </div>
           </div>
         </aside>

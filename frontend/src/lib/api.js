@@ -18,7 +18,14 @@ export function formatError(e) {
   return detail.msg || String(detail);
 }
 
-export const priceLabel = (n) => "$".repeat(n || 1);
+export const PRICE_LABELS = {
+  1: "₹100–₹200",
+  2: "₹200–₹400",
+  3: "₹500–₹1000",
+  4: "₹1000+",
+};
+
+export const priceLabel = (n) => PRICE_LABELS[n] || "₹200–₹400";
 
 export function isOpenNow(open, close) {
   if (!open || !close) return false;

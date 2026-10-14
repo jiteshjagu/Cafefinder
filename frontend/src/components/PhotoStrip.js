@@ -10,7 +10,7 @@ export default function PhotoStrip({ photos = [], size = "h-24 w-24", testid = "
       <div className="mt-3 flex flex-wrap gap-2" data-testid={testid}>
         {photos.map((id) => (
           <button key={id} type="button" onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpen(id); }} data-testid={`photo-thumb-${id}`}
-            className={`${size} overflow-hidden rounded-xl border border-[#E4DACF] transition-transform duration-200 hover:scale-105`}>
+            className={`${size} overflow-hidden rounded-xl border border-[#EFE6D8] transition-transform duration-200 hover:scale-105`}>
             <img src={photoUrl(id)} alt="Review" loading="lazy" className="h-full w-full object-cover" />
           </button>
         ))}

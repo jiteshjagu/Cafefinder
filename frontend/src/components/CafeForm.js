@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { api, formatError } from "@/lib/api";
+import { api, formatError, priceLabel } from "@/lib/api";
 
 const EMPTY = { name: "", tagline: "", description: "", neighborhood: "", address: "", price_level: 2, cuisines: [], amenities: [], vibes: [],
   wifi_speed: 0, noise_level: "Moderate", open_time: "08:00", close_time: "20:00", images: [], menu: [] };
 const LIST_FIELDS = ["cuisines", "amenities", "vibes", "images"];
-const inp = "w-full rounded-lg border border-[#E4DACF] bg-white px-3 py-2 text-sm outline-none focus:border-[#C86D3B]";
+const inp = "w-full rounded-lg border border-[#EFE6D8] bg-white px-3 py-2 text-sm outline-none focus:border-[#D3B683]";
 
 export default function CafeForm({ cafe, onClose, onSaved }) {
   const init = cafe ? { ...EMPTY, ...cafe } : EMPTY;
@@ -37,7 +37,7 @@ export default function CafeForm({ cafe, onClose, onSaved }) {
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent aria-describedby={undefined} className="max-h-[90vh] overflow-y-auto bg-[#FAF6F0] sm:max-w-3xl" data-testid="cafe-form-dialog">
+      <DialogContent aria-describedby={undefined} className="max-h-[90vh] overflow-y-auto border border-[#EFE6D8] bg-white sm:max-w-3xl" data-testid="cafe-form-dialog">
         <DialogHeader><DialogTitle className="font-display text-2xl">{cafe ? `Edit ${cafe.name}` : "Add a new cafe"}</DialogTitle></DialogHeader>
         <form onSubmit={save} className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2">
@@ -45,8 +45,8 @@ export default function CafeForm({ cafe, onClose, onSaved }) {
             {text("tagline", "Tagline")}
             {text("neighborhood", "Neighbourhood")}
             {text("address", "Address")}
-            <label className="block"><span className="text-xs font-medium text-[#6E5E55]">Price level (1-4)</span>
-              <select value={f.price_level} onChange={(e) => upd("price_level", e.target.value)} className={inp} data-testid="cafe-form-price_level">{[1, 2, 3, 4].map((p) => <option key={p} value={p}>{"$".repeat(p)}</option>)}</select></label>
+            <label className="block"><span className="text-xs font-medium text-[#6E5E55]">Price range</span>
+              <select value={f.price_level} onChange={(e) => upd("price_level", e.target.value)} className={inp} data-testid="cafe-form-price_level">{[1, 2, 3, 4].map((p) => <option key={p} value={p}>{priceLabel(p)}</option>)}</select></label>
             <label className="block"><span className="text-xs font-medium text-[#6E5E55]">Noise level</span>
               <select value={f.noise_level} onChange={(e) => upd("noise_level", e.target.value)} className={inp} data-testid="cafe-form-noise_level">{["Quiet", "Moderate", "Lively"].map((p) => <option key={p}>{p}</option>)}</select></label>
             {text("open_time", "Opens", { type: "time" })}
@@ -69,7 +69,7 @@ export default function CafeForm({ cafe, onClose, onSaved }) {
             </div>
             <div className="mt-3 space-y-2">
               {f.menu.map((m, i) => (
-                <div key={i} className="grid grid-cols-12 gap-2 rounded-lg bg-white p-2" data-testid={`cafe-form-menu-row-${i}`}>
+                <div key={i} className="grid grid-cols-12 gap-2 rounded-lg border border-[#EFE6D8] bg-[#FAF7F2] p-2" data-testid={`cafe-form-menu-row-${i}`}>
                   <input placeholder="Category" value={m.category} onChange={(e) => updItem(i, "category", e.target.value)} className={`${inp} col-span-6 sm:col-span-3`} data-testid={`menu-row-${i}-category`} />
                   <input placeholder="Name" required value={m.name} onChange={(e) => updItem(i, "name", e.target.value)} className={`${inp} col-span-6 sm:col-span-3`} data-testid={`menu-row-${i}-name`} />
                   <input placeholder="Description" value={m.description} onChange={(e) => updItem(i, "description", e.target.value)} className={`${inp} col-span-8 sm:col-span-3`} data-testid={`menu-row-${i}-description`} />
@@ -83,7 +83,7 @@ export default function CafeForm({ cafe, onClose, onSaved }) {
               ))}
             </div>
           </div>
-          <button disabled={busy} data-testid="cafe-form-submit" className="w-full rounded-full bg-[#C86D3B] py-3 font-semibold text-white hover:bg-[#A85528] disabled:opacity-60">{busy ? "Saving..." : "Save cafe"}</button>
+          <button disabled={busy} data-testid="cafe-form-submit" className="w-full rounded-full bg-[#D3B683] py-3 font-semibold text-[#2C221E] hover:bg-[#C2A36E] disabled:opacity-60">{busy ? "Saving..." : "Save cafe"}</button>
         </form>
       </DialogContent>
     </Dialog>

@@ -22,7 +22,7 @@ export default function Footer() {
           <p className="font-mono-x text-xs uppercase tracking-[0.18em] text-[#A89A8E]">You</p>
           <div className="mt-4 flex flex-col gap-2 text-sm">
             <Link to="/favorites" className="hover:text-[#E09F3E]">Saved cafes</Link>
-            <Link to="/reviews" className="hover:text-[#E09F3E]">Reviews dashboard</Link>
+            <Link to="/reviews" className="hover:text-[#E09F3E]">Reviews</Link>
             <Link to="/scan" className="hover:text-[#E09F3E]">Scan to review</Link>
             <Link to="/login" className="hover:text-[#E09F3E]">Log in</Link>
           </div>
